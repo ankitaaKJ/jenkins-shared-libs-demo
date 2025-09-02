@@ -1,13 +1,17 @@
-FROM centos:centos8 
-RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-* 
-RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-* 
-RUN yum update -y  
-RUN yum install httpd -y 
-RUN ls
-RUN echo "ServerName localhost" >> /etc/httpd/conf/httpd.conf 
-RUN httpd -k restart 
-EXPOSE 1000 
+FROM centos:centos8
 
-CMD ["httpd", "-D", "FOREGROUND"] 
+# Fix CentOS repos
+RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-* \
+ && sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-* \
+ && yum update -y \
+ && yum install -y httpd \
+ && yum clean all
 
+# Set ServerName to avoid warnings
+RUN echo "ServerName localhost" >> /etc/httpd/conf/httpd.conf
 
+# Expose Apache default port
+EXPOSE 80
+
+# Run Apache in foreground
+CMD ["httpd", "-D", "FOREGROUND"]
