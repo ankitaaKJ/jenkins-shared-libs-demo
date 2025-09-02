@@ -1,0 +1,14 @@
+@Library('MyCustomDockerBuildLib') _
+pipeline {
+    agent {
+        label 'built-in'
+    }
+    
+    stages{
+        stage ('Build stage'){
+            steps ('Buildin step'){
+                dockerBuild(name: 'Dockerfile')
+            }
+        }
+    }
+}
