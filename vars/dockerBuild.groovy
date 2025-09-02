@@ -1,4 +1,5 @@
 def call(Map config = [:]) {
     loadLinuxScript(name: 'Dockerfile')
-    sh "docker build ."
+    sh "docker build -t myApacheImg."
+
 }
